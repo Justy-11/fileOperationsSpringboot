@@ -43,7 +43,8 @@ public class FileStorageController {
 
         return ResponseEntity.ok()
                 .contentType(contentType)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment:fileName=" + resource.getFilename())
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=" + resource.getFilename())  // to download the image
+                //.header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + resource.getFilename())  // to render the file
                 .body(resource);
     }
 }
