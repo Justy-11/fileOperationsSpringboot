@@ -65,6 +65,11 @@ public class FileStorageController {
     @PostMapping("/multiple/upload")
     List<FileUploadResponse> multipleUpload(@RequestParam("files") MultipartFile[] files){
 
+        // no. of files threshold
+        if(files.length > 7){
+            throw new RuntimeException("Too many files uploaded!!");
+        }
+
         List<FileUploadResponse> uploadResponseList = new ArrayList<>();
         Arrays.stream(files)
                 .forEach(file -> {
