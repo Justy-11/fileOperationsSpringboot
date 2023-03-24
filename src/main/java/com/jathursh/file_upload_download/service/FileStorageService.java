@@ -1,6 +1,5 @@
 package com.jathursh.file_upload_download.service;
 
-import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public class FileStorageService {
     private Path fileStoragePath;
     private String fileStorageLocation;
 
-    public FileStorageService(@Value("${file.storage.location=temp}") String fileStorageLocation) {
+    public FileStorageService(@Value("${file.storage.location:temp}") String fileStorageLocation) {
 
         this.fileStorageLocation = fileStorageLocation;
         fileStoragePath = Paths.get(fileStorageLocation).toAbsolutePath().normalize();
@@ -34,7 +33,7 @@ public class FileStorageService {
             Files.createDirectories(fileStoragePath);  // For example, if the specified path is "/path/to/new/directory", and "/path/to" does not exist, then this method will create those parent directories as well.
         } catch (IOException e) {
             //e.printStackTrace();``
-            throw new RuntimeException("Issue in creating file directory");
+            throw new RuntimeException("Issue in creating file directory", e);
         }
     }
 
@@ -51,7 +50,7 @@ public class FileStorageService {
         try {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new RuntimeException("Issue in storing the file");
+            throw new RuntimeException("Issue in storing the file", e);
         }
         return fileName;
     }
