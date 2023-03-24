@@ -2,6 +2,7 @@ package com.jathursh.file_upload_download.controller;
 
 import com.jathursh.file_upload_download.dto.FileUploadResponse;
 import com.jathursh.file_upload_download.service.FileStorageService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 @RestController
@@ -35,14 +37,23 @@ public class FileStorageController {
     }
 
     @GetMapping("/download/{fileName}")
-    ResponseEntity<Resource> downloadSingleFile(@PathVariable String fileName) throws MalformedURLException {
+    ResponseEntity<Resource> downloadSingleFile(@PathVariable String fileName, HttpServletRequest request) throws MalformedURLException {
 
         Resource resource = fileStorageService.downloadFile(fileName);
 
-        MediaType contentType = MediaType.IMAGE_JPEG;
+        /* MediaType contentType = MediaType.IMAGE_JPEG;  MediaType contentType = MediaType.APPLICATION_PDF;*/
+        /* this is HARDCODING, so we can use http servlet request to get the content type according to the type of file we are uploading ---> */
+
+        String mimetype;
+
+        try {
+            mimetype = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException e) {
+            mimetype = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        }
 
         return ResponseEntity.ok()
-                .contentType(contentType)
+                .contentType(MediaType.parseMediaType(mimetype))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=" + resource.getFilename())  // to download the image
                 //.header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + resource.getFilename())  // to render the file
                 .body(resource);
