@@ -1,7 +1,6 @@
 package com.jathursh.file_upload_download.service;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,7 @@ public class FileStorageService {
 
         try {
             Files.createDirectories(fileStoragePath);  // For example, if the specified path is "/path/to/new/directory", and "/path/to" does not exist, then this method will create those parent directories as well.
-            System.out.println("Files.createDirectories(fileStoragePath) : " + Files.createDirectories(fileStoragePath));
+            System.out.println("Files.createDirectories(fileStoragePath) test: " + Files.createDirectories(fileStoragePath));  // Test
         } catch (IOException e) {
             //e.printStackTrace();``
             throw new RuntimeException("Issue in creating file directory", e);
