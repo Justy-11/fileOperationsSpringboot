@@ -2,13 +2,15 @@ package com.jathursh.file_upload_download.controller;
 
 import com.jathursh.file_upload_download.dto.FileUploadResponse;
 import com.jathursh.file_upload_download.service.FileStorageService;
-import org.springframework.core.io.UrlResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.MalformedURLException;
 
 @RestController
 public class FileStorageController {
@@ -33,9 +35,9 @@ public class FileStorageController {
     }
 
     @GetMapping("/download/{fileName}")
-    ResponseEntity<UrlResource> downloadSingleFile(@PathVariable String fileName){
+    ResponseEntity<Resource> downloadSingleFile(@PathVariable String fileName) throws MalformedURLException {
 
-        UrlResource resource = fileStorageService.downloadFile(fileName);
+        Resource resource = fileStorageService.downloadFile(fileName);
 
         MediaType contentType = MediaType.IMAGE_JPEG;
 

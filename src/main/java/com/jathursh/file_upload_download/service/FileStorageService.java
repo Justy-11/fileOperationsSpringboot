@@ -1,6 +1,8 @@
 package com.jathursh.file_upload_download.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -25,12 +27,16 @@ public class FileStorageService {
         this.fileStorageLocation = fileStorageLocation;
         fileStoragePath = Paths.get(fileStorageLocation).toAbsolutePath().normalize();
 
+        System.out.println("file storage location test : " + fileStorageLocation);  // Test
+        System.out.println("file storage location test : " + fileStoragePath);  // Test
+
         /*The Paths.get(fileStorageLocation) method is used to create a Path object from the fileStorageLocation string, which represents the path to a file or directory in the file system.
         The toAbsolutePath() method is then called on this Path object to convert it to an absolute path. An absolute path is a complete path that starts from the root directory of the file system. This is necessary because the original fileStorageLocation string may have been a relative path, which would be interpreted relative to the current working directory.
         Finally, the normalize() method is called on the Path object to normalize the path by removing redundant elements such as "." (current directory) and ".." (parent directory) components.*/
 
         try {
             Files.createDirectories(fileStoragePath);  // For example, if the specified path is "/path/to/new/directory", and "/path/to" does not exist, then this method will create those parent directories as well.
+            System.out.println("Files.createDirectories(fileStoragePath) : " + Files.createDirectories(fileStoragePath));
         } catch (IOException e) {
             //e.printStackTrace();``
             throw new RuntimeException("Issue in creating file directory", e);
@@ -55,21 +61,14 @@ public class FileStorageService {
         return fileName;
     }
 
-    public UrlResource downloadFile(String fileName) {
+    public Resource downloadFile(String fileName) throws MalformedURLException {
 
         Path path = Paths.get(fileStorageLocation).toAbsolutePath().resolve(fileName);
 
-        //Resource resource;
-        UrlResource urlResource;
+        Resource resource = new UrlResource(path.toUri());
 
-        try {
-            urlResource = new UrlResource(path.toUri());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Issue in reading the file ", e);
-        }
-
-        if(urlResource.exists() && urlResource.isReadable()){
-            return urlResource;
+        if(resource.exists() && resource.isReadable()){
+            return resource;
         }else{
             throw new RuntimeException("the file doesn't exist or not readable");
         }
