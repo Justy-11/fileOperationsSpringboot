@@ -3,6 +3,7 @@ package com.jathursh.file_upload_download.controller;
 import com.jathursh.file_upload_download.dto.FileUploadResponse;
 import com.jathursh.file_upload_download.service.FileStorageService;
 import jakarta.annotation.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,15 +36,15 @@ public class FileStorageController {
     }
 
     @GetMapping("/download/{fileName}")
-    ResponseEntity<Resource> downloadSingleFile(@PathVariable String fileName){
+    ResponseEntity<UrlResource> downloadSingleFile(@PathVariable String fileName){
 
-        Resource resource = fileStorageService.downloadFile(fileName);
+        UrlResource resource = fileStorageService.downloadFile(fileName);
 
         MediaType contentType = MediaType.IMAGE_JPEG;
 
         return ResponseEntity.ok()
                 .contentType(contentType)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment:fileName=" + resource.name())
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment:fileName=" + resource.getFilename())
                 .body(resource);
     }
 }

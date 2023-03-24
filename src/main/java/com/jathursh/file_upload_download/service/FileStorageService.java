@@ -2,11 +2,13 @@ package com.jathursh.file_upload_download.service;
 
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,23 +56,23 @@ public class FileStorageService {
         return fileName;
     }
 
-    public Resource downloadFile(String fileName) {
+    public UrlResource downloadFile(String fileName) {
 
         Path path = Paths.get(fileStorageLocation).toAbsolutePath().resolve(fileName);
 
-        Resource resource;
+        //Resource resource;
+        UrlResource urlResource;
 
-//        try {
-//            resource = new UrlResource(path.toUri());
-//        } catch (MalformedURLException e) {
-//            throw new RuntimeException("Issue in reading the file ", e);
-//        }
-//
-//        if(resource.exists() && resource.isReadable()){
-//            return resource;
-//        }else{
-//            throw new RuntimeException("the file doesn't exist or not readable");
-//        }
-        return null;
+        try {
+            urlResource = new UrlResource(path.toUri());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Issue in reading the file ", e);
+        }
+
+        if(urlResource.exists() && urlResource.isReadable()){
+            return urlResource;
+        }else{
+            throw new RuntimeException("the file doesn't exist or not readable");
+        }
     }
 }
