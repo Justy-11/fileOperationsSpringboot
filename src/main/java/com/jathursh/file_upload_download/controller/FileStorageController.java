@@ -13,6 +13,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 public class FileStorageController {
@@ -57,5 +61,25 @@ public class FileStorageController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=" + resource.getFilename())  // to download the image
                 //.header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + resource.getFilename())  // to render the file
                 .body(resource);
+    }
+
+    @PostMapping("/multiple/upload")
+    List<FileUploadResponse> multipleUpload(@RequestParam("files") MultipartFile[] files){
+
+        List<FileUploadResponse> uploadResponseList = new ArrayList<>();
+        Arrays.stream(files)
+                .forEach(file -> {
+                    String fileName = fileStorageService.storeFile(file);
+
+                    String url = ServletUriComponentsBuilder.fromCurrentContextPath()
+                            .path("/download/")
+                            .path(fileName)
+                            .toUriString();
+
+                    FileUploadResponse response=  new FileUploadResponse(fileName, file.getContentType(), url);
+                    uploadResponseList.add(response);
+                });
+
+        return uploadResponseList;
     }
 }
