@@ -3,6 +3,7 @@ package com.jathursh.file_upload_download.controller;
 import com.jathursh.file_upload_download.dto.FileUploadResponse;
 import com.jathursh.file_upload_download.service.FileStorageService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,6 +17,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.ZipEntry;
 
 @RestController
 public class FileStorageController {
@@ -85,5 +87,19 @@ public class FileStorageController {
                 });
 
         return uploadResponseList;
+    }
+
+    @GetMapping("/zipDownload")
+    void zipDownload(@RequestParam("fileName") String[] files, HttpServletRequest request) throws IOException{
+
+        Arrays.stream(files)
+                .forEach(file -> {
+                    //Resource resource = fileStorageService.downloadFile(file);
+
+                    //ZipEntry zipEntry = new ZipEntry(resource.getFilename());
+
+
+
+                });
     }
 }
