@@ -8,6 +8,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -17,7 +18,9 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @RestController
 public class FileStorageController {
@@ -89,17 +92,38 @@ public class FileStorageController {
         return uploadResponseList;
     }
 
+    // /zipDownload?fileName=create a mock server.png&DEPARTMENT_after_delete.png
     @GetMapping("/zipDownload")
-    void zipDownload(@RequestParam("fileName") String[] files, HttpServletRequest request) throws IOException{
+    void zipDownload(@RequestParam("fileName") String[] files, HttpServletResponse response) throws IOException {
 
-        Arrays.stream(files)
-                .forEach(file -> {
-                    //Resource resource = fileStorageService.downloadFile(file);
+        try(ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())){
+            Arrays.stream(files)
+                    .forEach(file -> {
+                        Resource resource = null;
+                        try {
+                            resource = fileStorageService.downloadFile(file);
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
 
-                    //ZipEntry zipEntry = new ZipEntry(resource.getFilename());
+                        assert resource != null;
+                        ZipEntry zipEntry = new ZipEntry(Objects.requireNonNull(resource.getFilename()));
 
+                        try {
+                            zipEntry.setSize(resource.contentLength());
+                            zos.putNextEntry(zipEntry);
 
+                            StreamUtils.copy(resource.getInputStream(), zos);
 
-                });
+                            zos.closeEntry();
+                        } catch (IOException e) {
+                            //e.printStackTrace();
+                            System.out.println("Some exception while zipping : " + e.getMessage());
+                        }
+
+                    });
+            zos.finish();
+        }
+
     }
 }
