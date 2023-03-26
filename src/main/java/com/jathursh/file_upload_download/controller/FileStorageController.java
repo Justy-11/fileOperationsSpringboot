@@ -92,7 +92,15 @@ public class FileStorageController {
         return uploadResponseList;
     }
 
-    // /zipDownload?fileName=create a mock server.png&DEPARTMENT_after_delete.png
+    // /zipDownload?fileName=create a mock server.png&fileName=DEPARTMENT_after_delete.png
+    /*files - an array of file names to be included in the zip file.
+    response - an instance of HttpServletResponse that is used to write the zip file to the HTTP response.
+    Inside the method, a ZipOutputStream is created using the HttpServletResponse's output stream as its destination.
+    For each file in the files array, the method downloads the file using the fileStorageService.downloadFile() method
+    and adds it to the zip file as a ZipEntry. The ZipEntry's name is set to the original file name, and its size is set
+    using the Resource object's contentLength() method. The file content is then copied to the ZipOutputStream using
+    StreamUtils.copy(). Finally, the ZipEntry is closed, and the ZipOutputStream is finished. If any exceptions occur
+     during this process, the error message is printed to the console.*/
     @GetMapping("/zipDownload")
     void zipDownload(@RequestParam("fileName") String[] files, HttpServletResponse response) throws IOException {
 
@@ -125,5 +133,7 @@ public class FileStorageController {
             zos.finish();
         }
 
+        response.setStatus(200);
+        //response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=zipfile");
     }
 }
