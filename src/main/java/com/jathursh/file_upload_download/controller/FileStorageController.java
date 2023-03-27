@@ -101,6 +101,7 @@ public class FileStorageController {
     using the Resource object's contentLength() method. The file content is then copied to the ZipOutputStream using
     StreamUtils.copy(). Finally, the ZipEntry is closed, and the ZipOutputStream is finished. If any exceptions occur
      during this process, the error message is printed to the console.*/
+    // added on 26/3/2023
     @GetMapping("/zipDownload")
     void zipDownload(@RequestParam("fileName") String[] files, HttpServletResponse response) throws IOException {
 
