@@ -8,6 +8,7 @@ This project allows users to upload and download files to/from their local syste
 * 📏 File size constraints
 * 🔢 Threshold for the number of files allowed to upload/download
 * 🗜️ ZIP file support
+* 🧪 Integration testing
 ### Technologies Used 🛠️
 * ☕ Java
 * 🌱 Spring Boot
