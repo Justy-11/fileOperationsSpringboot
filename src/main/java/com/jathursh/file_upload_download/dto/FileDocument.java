@@ -2,16 +2,17 @@ package com.jathursh.file_upload_download.dto;
 
 import jakarta.persistence.*;
 
+@Entity
 public class FileDocument {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column
+    @Column(name = "filename")
     private String fileName;
 
-    @Column
+    @Column(name = "docfile")
     @Lob  // Large Object (LOB) type, which can hold large amounts of data such as binary data, text, or images. In this case, docFile is a byte array that will store the binary data of a file.
     private byte[] docFile;
 
